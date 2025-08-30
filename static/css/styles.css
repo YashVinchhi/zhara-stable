@@ -1,0 +1,551 @@
+/* Zhara AI Assistant - Minimalist Dark Background with Light Cards */
+
+/* Color Palette */
+:root {
+  --bg-dark: #18181a;
+  --sidebar-bg: rgba(28,28,30,0.85);
+  --panel-card: #ffffff;
+  --panel-subtle: #f7f9fb;
+  --border-color: #e6e8ec;
+  --text-primary: #101418;
+  --text-secondary: #475067;
+  --text-muted: #8a93a6;
+  --bubble-user: #e9f8f1;
+  --bubble-user-border: #bfead7;
+  --bubble-bot: #f5f7fa;
+  --bubble-bot-border: #e6e8ec;
+  --accent: #4cd964;
+  --accent-hover: #34c759;
+  --green: #34d399;
+  --shadow-card: 0 10px 24px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
+  --shadow-soft: 0 6px 16px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.04);
+  --radius: 16px;
+  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --modal-bg: rgba(44,44,46,0.7);
+  --modal-blur: blur(16px);
+  --right-panel-width: 320px; /* width of the right avatar panel; adjustable via JS */
+}
+
+/* Global styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+h1, .main-title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h3, .settings-title, .modal-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* App Container - Three Panel Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  gap: 18px;
+  padding: 18px;
+}
+
+/* Side panels and keylines */
+.sessions-sidebar {
+  width: 280px;
+  background: rgba(30, 30, 30, 0.75);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: 1px solid #333333; /* keyline to center */
+}
+
+.right-panel {
+  width: var(--right-panel-width);
+  background: rgba(30, 30, 30, 0.75);
+  flex-shrink: 0; /* Prevent panel from shrinking when flex layout changes */
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft), inset 0 0 0 1px #444444; /* add subtle inner border */
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #333333; /* keyline to center */
+  box-sizing: border-box;
+  position: relative;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.sidebar-header {
+  padding: 20px 18px 16px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Big floating "New Chat" button - Figma style */
+.new-chat-btn {
+  width: 100%;
+  padding: 14px 0;
+  border: 1px solid #ffffff;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: #2C2C2E;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background .15s, transform .15s;
+  box-shadow: 0 2px 8px rgba(76,217,100,0.08);
+}
+
+.new-chat-btn:hover {
+  background: #343437;
+  transform: translateY(-1px);
+}
+
+.sessions-list {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 12px;
+}
+
+.session-item {
+  background: #2C2C2E;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.06);
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #dbe2ea;
+  transition: background .15s, border-color .15s, transform .15s;
+  gap: 12px;
+}
+
+.session-item:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+  transform: translateY(-2px);
+}
+
+.session-item.active {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.session-title {
+  font-weight: 500;
+  color: #f3f6fa;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-info {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+.sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px;
+  gap: 12px;
+}
+
+.settings-btn {
+  background: rgba(255,255,255,0.06);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  cursor: pointer;
+  transition: background .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.settings-btn:hover {
+  background: rgba(255,255,255,0.14);
+}
+
+/* Center Panel - Main Content */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.interaction-zone {
+  background: var(--panel-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-container {
+  flex: 1;
+  overflow: auto;
+  padding: 20px 24px;
+  background: var(--panel-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Messages */
+.message {
+  display: flex;
+}
+
+.message .message-content {
+  max-width: 70%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--bubble-bot-border);
+  background: var(--bubble-bot);
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.user .message-content {
+  background: var(--bubble-user);
+  border-color: var(--bubble-user-border);
+}
+
+.message .message-time {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Code blocks inside bot messages */
+.message-text pre {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.message-text code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Modal Styles */
+.settings-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background: rgba(30,30,32,0.25);
+  backdrop-filter: var(--modal-blur);
+  -webkit-backdrop-filter: var(--modal-blur);
+}
+.modal-content {
+  background: var(--modal-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 32px 28px 24px 28px;
+  min-width: 340px;
+  color: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.settings-row label {
+  font-weight: 500;
+  color: #e5e5ea;
+  font-size: 1rem;
+}
+.settings-row select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* Input area */
+.input-container {
+  background: #f2f2f7;
+  border-top: 1px solid #e6e8ec;
+  padding: 20px 24px;
+}
+.input-wrapper {
+  background: #f7f7fa;
+  border: none;
+  padding: 8px 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-sm);
+}
+.input-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.input-box {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 42px;
+  max-height: 160px;
+  padding: 10px 8px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.input-box::placeholder {
+  color: #9aa3b2;
+}
+.mic-btn, .upload-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+}
+.mic-btn:hover, .upload-btn:hover { background: rgba(0,0,0,0.06); }
+
+/* Send button states */
+.send-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 12px;
+  background: #e5e7eb;
+  color: #475569;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: not-allowed;
+}
+.send-btn.enabled {
+  background: #22c55e;
+  color: #ffffff;
+  cursor: pointer;
+}
+.send-btn.enabled:hover { filter: brightness(0.95); }
+
+/* Mobile sidebar toggle */
+.sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .app-container {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .sessions-sidebar {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    transform: translateX(-110%);
+    transition: transform .25s ease;
+    z-index: 500;
+  }
+
+  .sessions-sidebar.open {
+    transform: translateX(0%);
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 0;
+    background: var(--green);
+    color: #0d3b2a;
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+/* Avatar panel specifics */
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.avatar-card {
+  flex: 1;
+  position: relative;
+  margin: 16px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.03);
+  box-shadow: none; /* remove inner border from card; it's on panel now */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Keep canvas visible, placeholder overlays centered */
+#avatar-canvas {
+  width: 100% !important; /* take full width of the avatar card */
+  height: auto !important; /* keep aspect ratio (square) visually */
+  max-width: 100%;
+  display: block;
+}
+.avatar-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #cfcfd3;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  pointer-events: none;
+}
+
+.avatar-controls {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 16px 16px;
+}
+.control-btn {
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.control-btn:hover { background: rgba(255,255,255,0.12); }
+
+/* Resizer between main content and right panel */
+.resizer {
+  width: 14px; /* slightly larger hit area */
+  min-width: 10px;
+  cursor: col-resize;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border-radius: 4px;
+  margin: 0 6px;
+  align-self: stretch;
+  height: auto;
+  transition: background .12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120; /* keep resizer above adjacent panels */
+  touch-action: none; /* prevent touch scrolling while dragging */
+  -webkit-user-select: none;
+  user-select: none;
+}
+.resizer:hover {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+}
+
+/* Small visible grabber line for affordance */
+.resizer::before {
+  content: '';
+  width: 2px;
+  height: 36px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+}
+
+/* Hide resizer on narrow screens and keep layout stacked */
+@media (max-width: 900px) {
+  .resizer { display: none; }
+  .right-panel { display: none; }
+}
+
+/* Lucide icon defaults */
+[data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Icon sizes in buttons */
+.new-chat-btn [data-lucide],
+.settings-btn [data-lucide],
+.mic-btn [data-lucide],
+.upload-btn [data-lucide],
+.send-btn [data-lucide],
+.sidebar-toggle [data-lucide],
+.control-btn [data-lucide] {
+  width: 20px;
+  height: 20px;
+}
+
+/* User profile avatar */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+}
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #2C2C2E;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+}
+.user-info .user-name {
+  color: #ffffff;
+  font-weight: 500;
+}
+.user-info .user-status {
+  color: #c7c7cc;
+  font-size: 12px;
+  font-weight: 400;
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:">
+    <title>Zhara - AI Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css"
+          integrity="sha384-scpQJqXbp/4O66QYGm9hiZWcHYBwPwFE/4BPPc63T0ziKqrQVOIwWnSsEIjNuH3e"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+            integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu"
+            crossorigin="anonymous" defer></script>
+    <script src="/static/js/chat.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sessions Sidebar (ChatGPT-style) -->
+        <div class="sessions-sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 5l0 14"></path>
+                        <path d="m5 12l14 0"></path>
+                    </svg>
+                    New Chat
+                </button>
+                <button class="sidebar-toggle" title="Toggle sidebar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18m-9-9l9 9l-9 9"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="sessions-container">
+                <div class="sessions-list">
+                    <!-- Session items will be dynamically added here -->
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <span class="user-name">User</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="chat-container" role="log" aria-live="polite">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+            <div class="input-container initial">
+                <div class="input-selects">
+                    <div class="select-wrapper">
+                        <select id="model-select"
+                                class="model-select"
+                                aria-label="Select AI model">
+                            <!-- Models will be loaded dynamically -->
+                        </select>
+                    </div>
+                    <div class="select-wrapper">
+                        <select id="avatar-select"
+                                class="avatar-select"
+                                aria-label="Select avatar">
+                            <option value="default">Default Avatar</option>
+                            <option value="female">Female Avatar</option>
+                            <option value="male">Male Avatar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
+                    <textarea class="input-box"
+                              placeholder="Ask anything..."
+                              rows="1"
+                              aria-label="Chat input"></textarea>
+
+                    <div class="input-actions">
+                        <input type="file"
+                               id="file-input"
+                               accept="audio/*"
+                               hidden
+                               aria-label="Upload audio file">
+
+                        <button class="input-btn upload-btn mdi mdi-paperclip"
+                                aria-label="Upload file"
+                                title="Upload audio file"
+                                data-action="upload">
+                        </button>
+
+                        <button class="input-btn mic-btn mdi mdi-microphone"
+                                aria-label="Voice input"
+                                title="Record voice message">
+                        </button>
+
+                        <button class="input-btn send-btn mdi mdi-send"
+                                aria-label="Send message"
+                                title="Send message">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 3D Avatar Section -->
+        <aside class="avatar-section">
+            <div class="avatar-controls">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Avatar
+                </h3>
+                <div class="control-buttons">
+                    <button id="mute-btn" title="Mute">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        </svg>
+                    </button>
+                    <button id="fullscreen-btn" title="Fullscreen">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="avatar-container">
+                <canvas id="avatar-canvas" width="400" height="400"></canvas>
+                <div id="avatar-status" class="avatar-status">
+                    <div class="status-indicator"></div>
+                    <span>Idle</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

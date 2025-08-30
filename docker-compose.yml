@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  zhara:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MAX_AUDIO_DURATION=300
+      - MAX_TEXT_LENGTH=1000
+      - MAX_FILE_AGE=24
+      - OLLAMA_HOST=http://ollama:11434
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - ollama
+    networks:
+      - zhara-net
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - zhara-net
+
+volumes:
+  ollama_data:
+
+networks:
+  zhara-net:
+    driver: bridge

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "801ef04e-8cb9-489c-94d7-2d54a49b49d6",
+    "session_id": "d33d508e-0a84-4dae-b74f-3e8fca2c1069",
+    "user_message": "hello\\",
+    "ai_response": "Hello! How can I assist you today?",
+    "timestamp": "2025-08-30T14:50:45.538665",
+    "model_used": "qwen2:0.5b",
+    "audio_file": "response_459c88e7-de9d-4eb2-b071-38c3ec6823bd.wav",
+    "viseme_file": "visemes_459c88e7-de9d-4eb2-b071-38c3ec6823bd.json"
+  }
+]

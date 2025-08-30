@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data:; media-src 'self'">
+    <title>Zhāra - AI Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="/static/js/init.js" defer></script>
+    <script src="/static/js/chat.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.447.0/lucide.min.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <div class="sessions-sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" aria-label="Start new chat">
+                    <i data-lucide="plus" aria-hidden="true"></i>
+                    New Chat
+                </button>
+            </div>
+            <div class="sessions-list"><!-- Sessions will be dynamically loaded here --></div>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+    <i data-lucide="user" aria-hidden="true"></i>
+</div>
+                    <div class="user-info">
+                        <div class="user-name">User</div>
+                        <div class="user-status">Online</div>
+                    </div>
+                </div>
+                <button class="settings-btn" title="Settings" aria-label="Open settings">
+                    <i data-lucide="settings" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Toggle for Mobile -->
+            <button class="sidebar-toggle" title="Toggle sidebar" aria-label="Toggle sidebar">
+                <i data-lucide="menu" aria-hidden="true"></i>
+            </button>
+
+            <!-- Chat Container -->
+            <div class="interaction-zone">
+                <div class="chat-container"><!-- Chat messages will be dynamically added here --></div>
+
+                <!-- Input Container -->
+                <div class="input-container initial">
+                    <div class="input-wrapper">
+                        <button class="upload-btn" title="Upload File" aria-label="Upload file">
+                            <i data-lucide="paperclip" aria-hidden="true"></i>
+                        </button>
+                        <textarea class="input-box" placeholder="Ask anything..." rows="1" aria-label="Message input"></textarea>
+                        <button class="mic-btn" title="Voice Input" aria-label="Voice input">
+                            <i data-lucide="mic" aria-hidden="true"></i>
+                        </button>
+                        <button class="send-btn" title="Send Message" aria-label="Send message" disabled>
+                            <i data-lucide="send" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Avatar Only -->
+        <div id="right-resizer" class="resizer" title="Resize avatar panel" aria-label="Resize avatar panel" role="separator" aria-orientation="vertical" tabindex="0"></div>
+        <div class="right-panel" aria-label="3D avatar panel">
+            <div class="avatar-section">
+                <div class="avatar-card">
+                    <div class="avatar-placeholder">3D Avatar Canvas</div>
+                    <div class="avatar-quick-icons" aria-hidden="true">
+                        <i data-lucide="mic-off"></i>
+                        <i data-lucide="video"></i>
+                        <i data-lucide="settings"></i>
+                    </div>
+                    <canvas id="avatar-canvas" width="300" height="300" aria-label="Avatar canvas"></canvas>
+                </div>
+                <div class="avatar-controls">
+                    <button id="mute-btn" class="control-btn" title="Toggle Mute" aria-label="Toggle mute">
+                        <i data-lucide="volume-2" aria-hidden="true"></i>
+                    </button>
+                    <button id="fullscreen-btn" class="control-btn" title="Fullscreen" aria-label="Fullscreen">
+                        <i data-lucide="maximize-2" aria-hidden="true"></i>
+                    </button>
+                    <button id="avatar-toggle-btn" class="control-btn" title="Toggle Avatar" aria-label="Toggle avatar">
+                        <i data-lucide="user" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal (hidden by default) -->
+        <div class="settings-modal" id="settings-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+            <div class="modal-content">
+                <h3 class="modal-title" id="settings-modal-title">AI Settings</h3>
+                <div class="settings-row">
+                    <label for="model-select">LLM Model:</label>
+                    <select id="model-select">
+                        <option value="">Loading models...</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <label for="voice-select">Voice (Coqui):</label>
+                    <select id="voice-select">
+                        <option value="default">Default</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <label for="avatar-select">Avatar Style:</label>
+                    <select id="avatar-select">
+                        <option value="default">Default</option>
+                        <option value="professional">Professional</option>
+                        <option value="casual">Casual</option>
+                    </select>
+                </div>
+                <button class="close-modal-btn" id="close-modal-btn" title="Close" aria-label="Close settings">
+                    <i data-lucide="x" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden File Input -->
+    <input type="file" id="file-input" style="display: none;" accept=".txt,.pdf,.doc,.docx,.json">
+
+    <!-- Audio Element for TTS -->
+    <audio id="tts-audio" preload="none"></audio>
+</body>
+</html>
