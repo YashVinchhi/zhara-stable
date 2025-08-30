@@ -8,16 +8,16 @@ Zhara is an advanced AI assistant that combines large language models, speech re
 - Large Language Model integration with Ollama
 - Lip sync generation with Rhubarb
 - Modern web interface
-- Docker support for easy deployment
 
-## Quick Start with Docker (Recommended)
+## Installation
 
 ### Prerequisites
-- Docker and Docker Compose installed
+- Python 3.10 or higher
 - At least 4GB RAM available
 - Internet connection for downloading models
+- Ollama installed and running (for LLM functionality)
 
-### Method 1: Using Docker Compose (Easiest)
+### Setup Instructions
 
 1. Clone the repository:
    ```bash
@@ -25,54 +25,40 @@ Zhara is an advanced AI assistant that combines large language models, speech re
    cd zhara
    ```
 
-2. Start both Zhara and Ollama using Docker Compose:
+2. Install Python dependencies:
    ```bash
-   docker-compose up -d
+   pip install -r requirements.txt
    ```
 
-3. Access the web interface at:
+3. Install Rhubarb Lip Sync (for lip sync generation):
+   - Download from [Rhubarb Lip Sync releases](https://github.com/DanielSWolf/rhubarb-lip-sync/releases)
+   - Extract and add the `rhubarb` executable to your system PATH
+
+4. Install and start Ollama:
+   - Follow the [Ollama installation guide](https://ollama.ai/download)
+   - Pull a model (e.g., `ollama pull qwen2.5-coder:14b`)
+   - Ensure Ollama is running on `http://localhost:11434`
+
+5. Run the application:
+   ```bash
+   python zhara.py
+   ```
+
+6. Access the web interface at:
    ```
    http://localhost:8000
    ```
 
-### Method 2: Using Docker Manually
-
-1. Start Ollama with the required model:
-   ```bash
-   # Start Ollama container
-   docker run -d --name ollama -p 11434:11434 ollama/ollama
-   
-   # Pull and run the model
-   docker exec -it ollama ollama run qwen2:0.5b
-   ```
-
-2. Run Zhara container:
-   ```bash
-   docker run -d \
-     --name zhara \
-     -p 8000:8000 \
-     --network host \
-     ghcr.io/yashvinchhi/zhara:latest
-   ```
-
-3. Access the web interface at:
-   ```
-   http://localhost:8000
-   ```
-
-### Docker Configuration Options
+### Configuration
 
 You can customize Zhara's behavior using environment variables:
 
 ```bash
-docker run -d \
-  --name zhara \
-  -p 8000:8000 \
-  -e MAX_AUDIO_DURATION=600 \
-  -e MAX_TEXT_LENGTH=2000 \
-  -e MAX_FILE_AGE=24 \
-  -e OLLAMA_HOST=http://localhost:11434 \
-  ghcr.io/yashvinchhi/zhara:latest
+export MAX_AUDIO_DURATION=600
+export MAX_TEXT_LENGTH=2000
+export MAX_FILE_AGE=24
+export OLLAMA_HOST=http://localhost:11434
+python zhara.py
 ```
 
 Available environment variables:
@@ -80,57 +66,6 @@ Available environment variables:
 - `MAX_TEXT_LENGTH`: Maximum text length for TTS (default: 1000)
 - `MAX_FILE_AGE`: Maximum age of files in hours (default: 24)
 - `OLLAMA_HOST`: Ollama server host (default: http://localhost:11434)
-
-### Docker Commands Reference
-
-1. Container Management:
-   ```bash
-   # Stop containers
-   docker stop zhara ollama
-
-   # Start containers
-   docker start zhara ollama
-
-   # Restart containers
-   docker restart zhara ollama
-
-   # Remove containers
-   docker rm -f zhara ollama
-   ```
-
-2. Viewing Logs:
-   ```bash
-   # View Zhara logs
-   docker logs zhara
-
-   # Follow Zhara logs
-   docker logs -f zhara
-
-   # View Ollama logs
-   docker logs ollama
-   ```
-
-3. Container Information:
-   ```bash
-   # Check container status
-   docker ps -a
-
-   # View container details
-   docker inspect zhara
-   ```
-
-4. Volume Management:
-   ```bash
-   # List volumes
-   docker volume ls
-
-   # Clean up unused volumes
-   docker volume prune
-   ```
-
-### Local Installation (Development)
-
-If you prefer to run without Docker:
 
 ## API Reference
 
@@ -223,28 +158,32 @@ If you prefer to run without Docker:
 ### Common Issues
 
 1. "Connection refused" when accessing Ollama:
-   - Check if Ollama container is running: `docker ps`
-   - Check Ollama logs: `docker logs ollama`
+   - Check if Ollama is running: `ollama list` or `ps aux | grep ollama`
+   - Verify Ollama is accessible at the configured host
    - Verify OLLAMA_HOST environment variable
 
 2. Audio generation fails:
    - Check available disk space
    - Verify storage directory permissions
-   - Check TTS model logs in container
+   - Check if TTS models are properly installed
 
-3. Container won't start:
-   - Check for port conflicts
-   - Verify Docker daemon is running
-   - Check system resources
+3. Application won't start:
+   - Check for port conflicts (port 8000)
+   - Verify all Python dependencies are installed
+   - Check system resources and available memory
+
+4. Rhubarb lip sync errors:
+   - Ensure Rhubarb is installed and in your PATH
+   - Check audio file format compatibility
 
 ### Getting Help
 
 If you encounter issues:
-1. Check the container logs
+1. Check the application logs in your terminal
 2. Verify all prerequisites are met
 3. Create an issue on GitHub with:
    - Error messages
-   - Container logs
+   - Application logs
    - System information
 
 ## Notes
@@ -252,4 +191,9 @@ If you encounter issues:
 - The static files are served from the project directory root.
 
 ## License
-MIT
+Copyright © 2025 Yash Vinchhi  
+All rights reserved.  
+
+This software is proprietary.  
+Unauthorized copying, modification, distribution, or use of this code,  
+via any medium, is strictly prohibited without explicit permission.
