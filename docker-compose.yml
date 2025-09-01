@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  zhara:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: zhara:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - MAX_AUDIO_DURATION=${MAX_AUDIO_DURATION:-300}
+      - MAX_TEXT_LENGTH=${MAX_TEXT_LENGTH:-1000}
+      - MAX_FILE_AGE=${MAX_FILE_AGE:-24}
+    volumes:
+      - ./storage:/app/storage
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped

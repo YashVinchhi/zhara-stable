@@ -20,3 +20,11 @@ sentence-transformers>=2.2.2
 apscheduler>=3.10.0
 validators>=0.22.0
 psutil>=5.9.0
+
+# Additional packages required by the project code
+pydub==0.25.1          # audio manipulation used by tts_service
+pynvml==11.0.0         # optional GPU driver info (pynvml)
+transformers==4.34.0   # used transitively by sentence-transformers / models
+onnx==1.15.0           # optional for ONNX-based TTS/Piper models
+onnxruntime==1.15.1    # runtime for ONNX-based models (optional)
+ffmpeg-python==0.2.0   # python bindings for ffmpeg (ffmpeg binary still required)

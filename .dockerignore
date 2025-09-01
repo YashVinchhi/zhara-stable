@@ -1,0 +1,23 @@
+# Ignore Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# VCS and editor
+.git/
+.vscode/
+
+# Local envs
+.venv/
+.env
+
+# Large / generated runtime data
+logs/
+storage/audio/
+storage/visemes/
+response.wav
+
+# Node / front-end caches (if any)
+node_modules/
