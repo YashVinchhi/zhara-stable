@@ -48,6 +48,10 @@ Zhara is an advanced AI assistant that combines large language models, speech re
    ```
    http://localhost:8000
    ```
+   
+Note: To run with Docker or Docker Compose, see DOCKER.md for detailed instructions.
+
+ 
 
 ### Configuration
 
