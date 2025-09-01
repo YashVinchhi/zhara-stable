@@ -1,5 +1,6 @@
-# Ignore all markdown files except the repository README
+# Ignore markdown broadly but allow primary docs
 *.md
 !README.md
 !readme.md
+!DOCKER.md
 
